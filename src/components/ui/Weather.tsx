@@ -77,32 +77,37 @@ const Weather = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSearch = () => {
     fetchWeather(query);
   };
 
   return (
     <div className="weather font-[poppins] place-self-center items-center gap-6 p-10 rounded-[10px] bg-[#541fbf] flex flex-col">
-      <form
-        className="search-bar flex items-center gap-3 w-full"
-        onSubmit={handleSubmit}
-      >
+      <div className="search-bar flex items-center gap-3 w-full">
         <input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           type="text"
           placeholder="Search"
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              handleSearch();
+            }
+          }}
           className="flex-1 bg-white outline-none rounded-full p-3 text-[1.2rem] font-[poppins]"
         />
-        <button
-          type="submit"
-          className="rounded-full bg-white p-3 text-[1rem] font-semibold text-[#541fbf]"
-          disabled={loading}
-        >
-          Search
+
+        <button className="cursor-pointer">
+          {" "}
+          <img
+            src="/public/search.png"
+            alt="search-icon"
+            tabIndex={0}
+            onClick={handleSearch}
+            className="rounded-full bg-white p-3 text-[1rem] font-semibold text-[#541fbf]"
+          />
         </button>
-      </form>
+      </div>
 
       {loading && <p className="text-white text-xl">Loading...</p>}
       {error && !loading && <p className="text-red-300">{error}</p>}
