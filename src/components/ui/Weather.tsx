@@ -10,9 +10,16 @@ type WeatherData = {
 };
 
 const Weather = () => {
+  //stores the user input
   const [query, setQuery] = useState("Pretoria");
+
+  //stores the weather data fetched
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+
+  //controls the UI feedback when loading
   const [loading, setLoading] = useState(false);
+
+  //controls the UI feedback when an error occurs
   const [error, setError] = useState<string | null>(null);
 
   const fetchWeather = async (city: string) => {
@@ -25,21 +32,26 @@ const Weather = () => {
     try {
       const apiKey = API;
       if (!apiKey) throw new Error("Missing API key");
-
+      //step 1: build the URL
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
         city
       )}&units=metric&appid=${apiKey}`;
+
+      //step 2: fetch the data and store it in response
       const response = await fetch(url);
+
+      //step 3: validate the response
 
       if (!response.ok) {
         const payload = await response.json().catch(() => ({}));
         const message = (payload as { message?: string }).message;
         throw new Error(message ?? "Could not fetch weather data");
       }
-
+      //step 4: extract the data from response and store it in data
       const data = await response.json();
       const weather = data.weather?.[0];
 
+      //step 5: transformation of data
       setWeatherData({
         temp: Math.round(data.main.temp),
         location: `${data.name}, ${data.sys?.country ?? ""}`.trim(),
